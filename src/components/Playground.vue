@@ -16,7 +16,8 @@ import infoAllImgLu from '../assets/7-說明全部左上.png'
 import infoAllImgLb from '../assets/7-說明全部左下.png'
 import infoAllImgRu from '../assets/7-說明全部右上.png'
 import infoAllImgRb from '../assets/7-說明全部右下.png'
-
+import homeImg from '../assets/5.icon/5-回開始畫面.png'
+import replayImg from '../assets/5.icon/5-再一次.png'
 
 import MusicLine from './MusicLine.vue'
 import PlayInstrumentAni from './PlayInstrumentAni.vue'
@@ -33,8 +34,6 @@ import FadeBackground from './FadeBackground.vue'
 const router = useRouter()
 const route = useRoute()
 
-console.log(route.query)
-
 onMounted(() => {
   getUrlQueryParams()
 
@@ -42,11 +41,10 @@ onMounted(() => {
 
 let getUrlQueryParams = async () => {    
   await router.isReady()
-  console.log(route.query)
   Object.keys(route.query).forEach(function(k){
-    console.log(k + ' - ' + parseInt(route.query[k]));
     selectedInstr[k] = parseInt(route.query[k]);
     instrArray[route.query[k]] = true;
+    totalInstr++;
   });
 };
 
@@ -82,7 +80,6 @@ for (let i=0; i<instrumentsEn.length; i++) {
             url: getMusicUrl(`${instrumentsEn[i]}_${j+1}.mp3`),
             onload: ()=>{
                 musicLoaded++;
-                console.log(musicLoaded)
             },
             loop: true
         }).toDestination());
@@ -121,12 +118,11 @@ let clickPlay = (event) => {
 }
 
 let setInstrument = (id, selected) => {
-    console.log(id, selected);
     if (selected) {
+        instrArray[id] = true;
         for (let i=0; i<selectedInstr.length; i++) {
             if (selectedInstr[i] == -1) {
                 selectedInstr[i] = id;
-                console.log(selectedInstr)
                 totalInstr++;
                 break;
             }
@@ -135,6 +131,7 @@ let setInstrument = (id, selected) => {
             selectable = false
         }
     } else {
+        instrArray[id] = false;
         for (let i=0; i<selectedInstr.length; i++) {
             if (selectedInstr[i] == id) {
                 selectedInstr[i] = -1;
@@ -145,6 +142,16 @@ let setInstrument = (id, selected) => {
         }
     }
     
+}
+let replay = () => {
+    for (let i=0; i<selectedInstr.length; i++) {
+        selectedInstr[i] = -1;
+        totalInstr = 0;
+        selectable = true;
+    }
+    for (let i=0; i<instrArray.length; i++) {
+        instrArray[i] = false;
+    }
 }
 
 document.addEventListener('click', (e) => {
@@ -160,8 +167,14 @@ document.addEventListener('click', (e) => {
     <img class="bg pos-top-ceter" :src="leafImg">
     <img class="bg pos-bottom-left" :src="selectInstrumentImg" alt="select instrument" id="select-instrument-bg">
     <img class="bg pos-bottom-center" :src="makeMusicImg" alt="make music" id="make-music-bg">
+    <div class="btn-left-up">
+        <img class="button" :src="homeImg" alt="Info" @click=""/>
+    </div>
+    <div class="btn-right-up">
+        <img class="button" :src="replayImg" alt="Info" @click="replay()"/>
+    </div>
     <div class="button-container">
-        <img class="button" :src="infoImg" alt="Info" @click="shoInfo=true"/>
+        <img class="button" :src="infoImg" alt="Info" @click="showInfo=true"/>
         <img class="button" :src="playImg" alt="Play" @click="clickPlay($event)" play='false'/>
         <img class="button" :src="shareImg" alt="Share" @click="showModal=true"/>
     </div>
@@ -172,16 +185,46 @@ document.addEventListener('click', (e) => {
     <div id="animation">
         <PlayInstrumentAni v-for="(ani, aniIndex) in selectedInstr" :instrument="ani" :play="playing"/>
     </div>
-    <ShareModal :show-modal="showModal" v-on:close-modal="showModal = false"></ShareModal>
-    <!-- <FadeBackground :show="showInfo"> -->
-        <img class="pos-left-center cover-left-up" :src="infoAllImgLu">
-        <img class="pos-right-center cover-left-bottom" :src="infoAllImgLb">
-        <img class="pos-left-center cover-right-up" :src="infoAllImgRu">
-        <img class="pos-right-center cover-right-bottom" :src="infoAllImgRb">
-    <!-- </FadeBackground> -->
+    <ShareModal :show-modal="showModal" v-on:close-modal="showModal=false"></ShareModal>
+    <FadeBackground :show="showInfo">
+        <div>
+            <div class="modal-overlay"></div>
+            <img class="pos-left-center cover-left-up" :src="infoAllImgLu">
+            <img class="pos-right-center cover-left-bottom" :src="infoAllImgLb">
+            <img class="pos-left-center cover-right-up" :src="infoAllImgRu">
+            <img class="pos-right-center cover-right-bottom" :src="infoAllImgRb" @click="showInfo=false">
+        </div>
+    </FadeBackground>
 </template>
 
 <style scoped>
+.btn-left-up {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 7%;
+    
+}
+.btn-right-up {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 7%;
+    
+}
+.modal-overlay {
+  content: '';
+  position: absolute;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 998;
+  background: #FFFFFF;
+  opacity: 0.3;
+  cursor: pointer;
+}
 .cover-left-up {
     position: fixed;
     top: 0;

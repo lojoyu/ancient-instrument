@@ -8,7 +8,7 @@ import CharoniaTritonisData from "../assets/人物演奏樂器/CharoniaTritonis�
 import EngkromongData from "../assets/人物演奏樂器/Engkromong排鑼.json";
 import IpuHekeData from "../assets/人物演奏樂器/IpuHeke葫蘆鼓.json";
 import JewsHarpsData from "../assets/人物演奏樂器/JewsHarps口簧琴.json";
-
+import PanFlutesData from "../assets/人物演奏樂器/PanFlutes排笛.json";
 
 import { instruments } from '../assets/instrument';
 
@@ -24,7 +24,7 @@ const animationData = [
     IpuHekeData,
     JewsHarpsData,
     KetebungData,
-    //PanFlutesData,
+    PanFlutesData,
 ]
 let animation;
 const props = defineProps({
@@ -42,13 +42,11 @@ watch(()=>props.play, (p) => {
 })
 
 watch(()=>props.instrument, (i, oldi) => {
-    console.log('instr', oldi, i);
     if (oldi != -1 && animation != undefined) {
         animation.destroy();
         animation = undefined;
     }
     if (i != -1) {
-        console.log(`${instruments[i]}.json`);
         animation = lottie.loadAnimation({
             name: instruments[i],
             container: aniDiv.value,

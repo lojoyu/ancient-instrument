@@ -29,12 +29,12 @@ let toggleImages = (rowIndex, cellIndex, event) => {
     let el = event.target;
     if (el.getAttribute('selected') == 'true') {
         //cancel selection
-        el.setAttribute('selected', false);
+        //el.setAttribute('selected', false);
         el.src = tableData[rowIndex][cellIndex].imageSrc;
         emit('setInstrument', rowIndex*4+cellIndex, false);
     } else if (props.selectable) {
         //select
-        el.setAttribute('selected', true);
+        //el.setAttribute('selected', true);
         el.src = tableData[rowIndex][cellIndex].selectedImageSrc;
         emit('setInstrument', rowIndex*4+cellIndex, true);
     }

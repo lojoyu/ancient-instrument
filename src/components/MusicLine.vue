@@ -48,8 +48,6 @@ watch(width, (w) => {
 });
 watch(height, (h) => {
     if (myp5 != null) myp5.divHeight = h;
-    console.log(h, myp5.divHeight);
-
 });
 watch(()=>props.play, (p) => {
     if (myp5 != null) myp5.playing = p;
