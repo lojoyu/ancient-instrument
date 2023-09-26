@@ -6,8 +6,8 @@ import InstrumentTable from './components/InstrumentTable.vue';
 import { ref, reactive } from 'vue';
 
 let state = reactive({
-  main: false,
-  playground: true,
+  main: true,
+  playground: false,
   share: false,
   info: false,
   ins: false
@@ -22,17 +22,21 @@ function preloadImage(im_url) {
   let img = new Image();
   img.src = im_url;
 }
+let home = () => {
+  state.playground = false;
+  state.main = true;
 
+}
 </script>
 
 <template>
   <!-- <P5Background /> -->
-  <button @click="state.main = !state.main">Toggle {{ state.main }}</button>
+  <!-- <button @click="state.main = !state.main">Toggle {{ state.main }}</button> -->
   <FadeBackground :show="state.main">
     <P5Background @start="start"/>
   </FadeBackground>
   <FadeBackground :show="state.playground">
-    <Playground />
+    <Playground @home="home"/>
   </FadeBackground>
   <!-- <InstrumentTable /> -->
 </template>
@@ -42,12 +46,16 @@ function preloadImage(im_url) {
 .v-enter-active,
 .v-leave-active,
 .v-enter-active img,
-.v-leave-active img {
+.v-leave-active img
+{
   transition: opacity 1s ease;
 }
 
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
+}
+.v-enter-to {
+  opacity: 1;
 }
 </style>

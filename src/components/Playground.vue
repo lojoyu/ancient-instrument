@@ -51,11 +51,13 @@ let getUrlQueryParams = async () => {
 const props = defineProps({
   show: Boolean
 })
-const emit = defineEmits(['start', 'click'])
+const emit = defineEmits(['start', 'click', 'home'])
 
 let showModal = ref(false);
 let showInfo = ref(false);
+let timeout;
 
+const playbtn = ref(null)
 const el  = ref(null)
 const leftLeaf = ref(null)
 const triangle = ref(null)
@@ -143,7 +145,12 @@ let setInstrument = (id, selected) => {
     }
     
 }
-let replay = () => {
+let replay = (home=false) => {
+    playing.value = false;
+    console.log('click pause~!!!!');
+    playbtn.value.setAttribute('play', false);
+    playbtn.value.src = playImg;
+
     for (let i=0; i<selectedInstr.length; i++) {
         selectedInstr[i] = -1;
         totalInstr = 0;
@@ -152,13 +159,21 @@ let replay = () => {
     for (let i=0; i<instrArray.length; i++) {
         instrArray[i] = false;
     }
+    if (home) {
+        setTimeout(()=>{
+            emit('home');
+        }, 100)
+        
+    }
 }
 
 document.addEventListener('click', (e) => {
     console.log('click');
     Tone.start();
-    //player.start();
-    //players.value[0][0].start();
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => {
+        replay(true);
+    }, 30000)
 })
 </script>
 
@@ -168,14 +183,14 @@ document.addEventListener('click', (e) => {
     <img class="bg pos-bottom-left" :src="selectInstrumentImg" alt="select instrument" id="select-instrument-bg">
     <img class="bg pos-bottom-center" :src="makeMusicImg" alt="make music" id="make-music-bg">
     <div class="btn-left-up">
-        <img class="button" :src="homeImg" alt="Info" @click=""/>
+        <img class="button" :src="homeImg" alt="Info" @click="replay(true)"/>
     </div>
     <div class="btn-right-up">
         <img class="button" :src="replayImg" alt="Info" @click="replay()"/>
     </div>
     <div class="button-container">
         <img class="button" :src="infoImg" alt="Info" @click="showInfo=true"/>
-        <img class="button" :src="playImg" alt="Play" @click="clickPlay($event)" play='false'/>
+        <img class="button" :src="playImg" alt="Play" @click="clickPlay($event)" play='false' ref="playbtn"/>
         <img class="button" :src="shareImg" alt="Share" @click="showModal=true"/>
     </div>
     <InstrumentTable @set-instrument="setInstrument" :instrArray="instrArray" :selectable="selectable"/>

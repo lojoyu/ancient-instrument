@@ -44,10 +44,16 @@ for (let i=0; i<8; i++) {
 }
 
 watch(width, (w) => {
-    if (myp5 != null) myp5.divWidth = w;
+    if (myp5 != null) {
+      myp5.divWidth = w;
+      myp5.windowResized();
+    }
 });
 watch(height, (h) => {
-    if (myp5 != null) myp5.divHeight = h;
+    if (myp5 != null) {
+      myp5.divHeight = h;
+      myp5.windowResized();
+    }
 });
 watch(()=>props.play, (p) => {
     if (myp5 != null) myp5.playing = p;
@@ -59,6 +65,7 @@ watch(()=>props.play, (p) => {
 watch(()=>props.player, (player, oldPlayer) => {
     if (player == undefined && props.play) toRaw(oldPlayer)[nowTempo].stop();
     if (props.play) toRaw(player)[nowTempo].start(0, (Date.now() - startTime)/1000);
+    if (oldPlayer != undefined && !props.play) toRaw(oldPlayer)[nowTempo].stop();
    // else toRaw(player)[nowTempo].stop();
 
     // if (p) startTime = Date.now();
@@ -68,6 +75,7 @@ watch(()=>props.player, (player, oldPlayer) => {
 });
 
 onMounted(() => {
+  console.log('musicline on mounted')
     myp5 = new p5(script, el.value);
     if (myp5.divWidth == undefined) myp5.divWidth = width;
     if (myp5.divHeight == undefined) myp5.divHeight = height;

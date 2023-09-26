@@ -47,8 +47,8 @@ let start = () => {
   <!-- <div id="p5-bg" ref="el"> -->
   <!-- </div> -->
     <img class="bg" :src="leftLeafImg" alt="left leaf" id="left-leaf" ref="leftLeaf">
-    <!-- <img class="bg" :src="rightLeafImg" alt="right leaf" id="right-leaf">
-    <img class="bg" :src="bottomLeafImg" alt="bottom leaf" id="bottom-leaf"> -->
+    <img class="bg" :src="rightLeafImg" alt="right leaf" id="right-leaf">
+    <img class="bg" :src="bottomLeafImg" alt="bottom leaf" id="bottom-leaf">
     <img class="bg" :src="textureImg" alt="texture" id="texture">
     <div class="centerobj">
         <div class="coverimg">

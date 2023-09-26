@@ -14,7 +14,6 @@ export const script = function (p5) {
         noiseStart = p5.random();
         noiseStart2 = p5.random();
         noiseStart3 = p5.random();
-        console.log(noiseStart, noiseStart2, noiseStart3)
 
         wave = {
             y: p5.height / 2,
@@ -34,6 +33,10 @@ export const script = function (p5) {
     p5.windowResized = _ => {
         console.log('resize', p5.divWidth, p5.divHeight)
         p5.resizeCanvas(p5.divWidth, p5.divHeight);
+        if (wave) {
+            wave.y = p5.height/2;
+            wave.amplitude = p5.height/4;
+        }
     }
 
     function renderWave() {
