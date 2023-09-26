@@ -76,6 +76,7 @@ let players = reactive([])
 let musicLoaded = 0;
 //let players = [];
 for (let i=0; i<instrumentsEn.length; i++) {
+    console.log('put instrument!');
     players.push([]);
     for (let j=0; j<3; j++) {
         players[i].push(new Tone.Player({
