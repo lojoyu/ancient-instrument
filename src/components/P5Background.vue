@@ -8,6 +8,7 @@ import textureImg from '../assets/1.Home開頭主頁/1-紋理-壓在葉塗上.pn
 import triangleImg from '../assets/1.Home開頭主頁/1-三角形.png'
 import textImg from '../assets/1.Home開頭主頁/1-文字-創造你的南島之音.png'
 import startImg from '../assets/1.Home開頭主頁/1-文字-點擊開始.png'
+import bgImg from '../assets/1.Home開頭主頁/1-背景.png'
 
 import p5 from 'p5'
 import { script } from '../p5/background.js'
@@ -36,8 +37,8 @@ onMounted(() => {
 })
 
 let start = () => {
-    leftLeaf.value.classList.add('leftrotate');
-    triangle.value.classList.add('zoom');
+    // leftLeaf.value.classList.add('leftrotate');
+    // triangle.value.classList.add('zoom');
     emit('start');
 }
 
@@ -46,20 +47,22 @@ let start = () => {
 <template>
   <!-- <div id="p5-bg" ref="el"> -->
   <!-- </div> -->
+    <img class="bg" :src="bgImg">
+<!-- 
     <img class="bg" :src="leftLeafImg" alt="left leaf" id="left-leaf" ref="leftLeaf">
     <img class="bg" :src="rightLeafImg" alt="right leaf" id="right-leaf">
     <img class="bg" :src="bottomLeafImg" alt="bottom leaf" id="bottom-leaf">
-    <img class="bg" :src="textureImg" alt="texture" id="texture">
+    <img class="bg" :src="textureImg" alt="texture" id="texture"> -->
     <div class="centerobj">
         <div class="coverimg">
-            <img :src="triangleImg" alt="triangle" id="triangle" ref="triangle">
-            <img :src="textImg" alt="text" id="text">
+            <img :src="triangleImg" id="triangle" ref="triangle">
+            <img :src="textImg" id="text">
         </div>
 
         <div id="button">
             <button class="pushable" @click="start">
                 <span class="front">
-                    <img :src="startImg" alt="start" id="start">
+                    <img :src="startImg" id="start">
                 </span>
             </button>
         </div>
@@ -105,6 +108,7 @@ let start = () => {
 
 #button {
     /* position: relative; */
+    content: '';
     padding: 5% 30%;
     margin-top: 20px;
 }

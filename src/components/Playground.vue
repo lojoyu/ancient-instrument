@@ -5,10 +5,10 @@ import bgImg from '../assets/2.Back Ground底圖/2-底圖all.png'
 import selectInstrumentImg from '../assets/3.選擇樂器區域/3-選擇樂器底-全部.png'
 import makeMusicImg from '../assets/4.製作音樂組合/4-製作音樂底.png'
 import InstrumentTable from './InstrumentTable.vue'
-import infoImg from '../assets/5.icon/5-圓底問號.png'
-import playImg from '../assets/5.icon/5-圓底播放.png'
-import pauseImg from '../assets/5.icon/5-圓底暫停.png'
-import shareImg from '../assets/5.icon/5-圓底分享.png'
+import infoImg from '../assets/5.icon/5-問號.png'
+import playImg from '../assets/5.icon/5-播放.png'
+import pauseImg from '../assets/5.icon/5-暫停.png'
+import shareImg from '../assets/5.icon/5-分享.png'
 import rightLeafImg from '../assets/2.Back Ground底圖/2-右上葉子單獨.png'
 import leftLeafImg from '../assets/2.Back Ground底圖/2-左上葉子單獨.png'
 import leafImg from '../assets/2.Back Ground底圖/2-葉子.png'
@@ -18,6 +18,7 @@ import infoAllImgRu from '../assets/7-說明全部右上.png'
 import infoAllImgRb from '../assets/7-說明全部右下.png'
 import homeImg from '../assets/5.icon/5-回開始畫面.png'
 import replayImg from '../assets/5.icon/5-再一次.png'
+import emptyImg from '../assets/5.icon/5-空.png'
 
 import MusicLine from './MusicLine.vue'
 import PlayInstrumentAni from './PlayInstrumentAni.vue'
@@ -54,7 +55,7 @@ const props = defineProps({
 const emit = defineEmits(['start', 'click', 'home'])
 
 let showModal = ref(false);
-let showInfo = ref(false);
+let showInfo = ref(true);
 let timeout;
 
 const playbtn = ref(null)
@@ -100,6 +101,9 @@ watch(height, (h) => {
 
 onMounted(() => {
     myp5 = new p5(script, document.getElementById('p5-bg'));
+    setTimeout(()=> {
+        showInfo.value = false
+    }, 7000);
 })
 
 let clickPlay = (event) => {
@@ -174,7 +178,7 @@ document.addEventListener('click', (e) => {
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => {
         replay(true);
-    }, 30000)
+    }, 50000)
 })
 </script>
 
@@ -184,15 +188,16 @@ document.addEventListener('click', (e) => {
     <img class="bg pos-bottom-left" :src="selectInstrumentImg" alt="select instrument" id="select-instrument-bg">
     <img class="bg pos-bottom-center" :src="makeMusicImg" alt="make music" id="make-music-bg">
     <div class="btn-left-up">
-        <img class="button" :src="homeImg" alt="Info" @click="replay(true)"/>
+        <img class="button-up" :src="homeImg" alt="Info" @click="replay(true)"/>
     </div>
     <div class="btn-right-up">
-        <img class="button" :src="replayImg" alt="Info" @click="replay()"/>
+        <img class="button-up" :src="replayImg" alt="Info" @click="replay()"/>
     </div>
     <div class="button-container">
         <img class="button" :src="infoImg" alt="Info" @click="showInfo=true"/>
         <img class="button" :src="playImg" alt="Play" @click="clickPlay($event)" play='false' ref="playbtn"/>
-        <img class="button" :src="shareImg" alt="Share" @click="showModal=true"/>
+        <img class="button" :src="emptyImg" alt="Share" @click="showModal=true"/>
+        <!-- <img class="button" :src="shareImg" alt="Share" @click="showModal=true"/> -->
     </div>
     <InstrumentTable @set-instrument="setInstrument" :instrArray="instrArray" :selectable="selectable"/>
     <div id="make-music-line">
@@ -219,6 +224,7 @@ document.addEventListener('click', (e) => {
     top: 0;
     left: 0;
     width: 7%;
+    padding: 1%;
     
 }
 .btn-right-up {
@@ -226,6 +232,7 @@ document.addEventListener('click', (e) => {
     top: 0;
     right: 0;
     width: 7%;
+    padding: 1%;
     
 }
 .modal-overlay {
@@ -343,9 +350,16 @@ document.addEventListener('click', (e) => {
   height: 10%;
 } */
 
-.button {
-    width: 100%;
+.button-up {
+    width: 60%;
     height: auto;
+    margin: 20%;
+}
+
+.button {
+    width: 76%;
+    height: auto;
+    margin: 12%;
 }
 
 #make-music-line {
