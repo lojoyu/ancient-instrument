@@ -5,7 +5,6 @@ export const script = function (p5) {
 
     // NOTE: Set up is here   
     p5.setup = _ => {      
-        console.log("musicline.js", p5.divWidth, p5.divHeight);
         p5.createCanvas(p5.divWidth, p5.divHeight);      
         p5.noFill();
         p5.stroke(243,229,156);  
@@ -31,7 +30,6 @@ export const script = function (p5) {
         renderWave();   
     }  
     p5.windowResized = _ => {
-        console.log('resize', p5.divWidth, p5.divHeight)
         p5.resizeCanvas(p5.divWidth, p5.divHeight);
         if (wave) {
             wave.y = p5.height/2;

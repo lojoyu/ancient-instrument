@@ -42,12 +42,16 @@ let start = () => {
     emit('start');
 }
 
+let imgLoad = () => {
+    console.log('image loaded!!!');
+}
+
 </script>
 
 <template>
   <!-- <div id="p5-bg" ref="el"> -->
   <!-- </div> -->
-    <img class="bg" :src="bgImg">
+    <img class="bg" :src="bgImg" @load="imgLoad">
 <!-- 
     <img class="bg" :src="leftLeafImg" alt="left leaf" id="left-leaf" ref="leftLeaf">
     <img class="bg" :src="rightLeafImg" alt="right leaf" id="right-leaf">

@@ -75,7 +75,6 @@ watch(()=>props.player, (player, oldPlayer) => {
 });
 
 onMounted(() => {
-  console.log('musicline on mounted')
     myp5 = new p5(script, el.value);
     if (myp5.divWidth == undefined) myp5.divWidth = width;
     if (myp5.divHeight == undefined) myp5.divHeight = height;

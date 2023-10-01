@@ -4,18 +4,23 @@ import FadeBackground from './components/FadeBackground.vue';
 import Playground from './components/Playground.vue';
 import InstrumentTable from './components/InstrumentTable.vue';
 import { ref, reactive } from 'vue';
+import {preloadAll, preloadPlay, preloadHome} from './js/preload'
+import {onMounted} from 'vue'
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/css/index.css';
 
 let state = reactive({
-  main: true,
+  main: false,
   playground: false,
-  share: false,
-  info: false,
-  ins: false
+  loading: true,
 })
 let start = () => {
-  console.log('start in app.vue')
   state.main = false;
-  state.playground = true;
+  state.loading = true;
+  preloadPlay(()=>{
+    state.loading = false;
+    state.playground = true;
+  });
 }
 
 function preloadImage(im_url) {
@@ -24,12 +29,27 @@ function preloadImage(im_url) {
 }
 let home = () => {
   state.playground = false;
-  state.main = true;
-
+  state.loading = true;
+  preloadHome(()=>{
+    state.loading = false;
+    state.main = true;
+  });
 }
+onMounted(()=>{
+  preloadAll(()=>{
+    console.log('all loaded!');
+    state.loading = false;
+    state.main = true;
+  })
+})
 </script>
 
 <template>
+  <loading v-model:active="state.loading"
+          :can-cancel="false"
+          :is-full-page="true"
+          loader="dots"
+          color="#f1d248"/>
   <!-- <P5Background /> -->
   <!-- <button @click="state.main = !state.main">Toggle {{ state.main }}</button> -->
   <FadeBackground :show="state.main">
