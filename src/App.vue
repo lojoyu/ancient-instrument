@@ -10,6 +10,7 @@ import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
 import Share from './components/Share.vue'
 import { useRoute, useRouter } from 'vue-router'
+import rotateImg from './assets/手機轉橫式.png'
 
 const router = useRouter()
 const route = useRoute()
@@ -30,7 +31,7 @@ let getUrlQueryParams = async () => {
   });
 };
 
-
+let toRotate = ref(false);
 let state = reactive({
   main: false,
   playground: false,
@@ -65,6 +66,19 @@ onMounted(()=>{
     state.main = true;
   })
 })
+
+let handleOrientationChange = () => {
+  const orientation = window.screen.orientation.type
+  if (orientation === "portrait-primary") {
+    // portrait mode
+    toRotate.value = true;
+  } else if (orientation === "landscape-primary") {
+    // landscape mode
+    toRotate.value = false;
+  }
+}
+window.addEventListener("orientationchange", handleOrientationChange);
+
 </script>
 
 <template>
@@ -83,6 +97,11 @@ onMounted(()=>{
   </FadeBackground>
   <FadeBackground :show="state.share">
     <Share />
+  </FadeBackground>
+  <FadeBackground :show="toRotate">
+    <div class="overlay" 
+         @click="emit('closeModal')"></div>
+    <img :src="rotateImg" class="rotate">
   </FadeBackground>
   <!-- <InstrumentTable /> -->
 </template>
@@ -103,5 +122,33 @@ onMounted(()=>{
 }
 .v-enter-to {
   opacity: 1;
+}
+
+.rotate {
+  width: 80%;
+  height: fit-content;
+  z-index: 1001;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+
+}
+.overlay {
+  content: '';
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  background: #FFFFFF;
+  opacity: 0.6;
+  cursor: pointer;
 }
 </style>
