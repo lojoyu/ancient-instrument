@@ -18,6 +18,7 @@ import homeImg from '../assets/5.icon/5-回開始畫面.png'
 import replayImg from '../assets/5.icon/5-再一次.png'
 import emptyImg from '../assets/5.icon/5-空.png'
 
+
 import MusicLine from './MusicLine.vue'
 import PlayInstrumentAni from './PlayInstrumentAni.vue'
 import p5 from 'p5'
@@ -168,6 +169,11 @@ let replay = (home=false) => {
     }
 }
 
+let share = () => {
+    console.log(window.location.host);
+    showModal.value=true
+}
+
 document.addEventListener('click', (e) => {
     Tone.start();
     if (timeout) clearTimeout(timeout);
@@ -192,7 +198,7 @@ document.addEventListener('click', (e) => {
         <img class="button" :src="infoImg" alt="Info" @click="showInfo=true"/>
         <img class="button" :src="playImg" alt="Play" @click="clickPlay($event)" play='false' ref="playbtn"/>
         <img class="button" :src="emptyImg" alt="Share" @click="showModal=true"/>
-        <!-- <img class="button" :src="shareImg" alt="Share" @click="showModal=true"/> -->
+        <!-- <img class="button" :src="shareImg" alt="Share" @click="share()"/> -->
     </div>
     <InstrumentTable @set-instrument="setInstrument" :instrArray="instrArray" :selectable="selectable"/>
     <div id="make-music-line">

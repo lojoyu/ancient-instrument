@@ -38,12 +38,16 @@ onMounted(() => {
 
 });
 
+
 let getUrlQueryParams = async () => {    
   await router.isReady()
   Object.keys(route.query).forEach(function(k){
-    selectedInstr[k] = parseInt(route.query[k]);
-    instrArray[route.query[k]] = true;
-    totalInstr++;
+    console.log('share', k)
+    if (k != 'share') {
+        selectedInstr[k] = parseInt(route.query[k]);
+        instrArray[route.query[k]] = true;
+        totalInstr++;
+    }
   });
 };
 
@@ -180,13 +184,8 @@ document.addEventListener('click', (e) => {
 <template>
     <img class="bg pos-top-center" :src="bgImg" alt="background" id="background">
     <img class="bg pos-top-ceter" :src="leafImg">
-    <img class="bg pos-bottom-left" :src="selectInstrumentImg" alt="select instrument" id="select-instrument-bg">
-    <img class="bg pos-bottom-center" :src="makeMusicImg" alt="make music" id="make-music-bg">
     <div class="btn-left-up">
         <img class="button-up" :src="homeImg" alt="Info" @click="replay(true)"/>
-    </div>
-    <div class="btn-right-up">
-        <img class="button-up" :src="replayImg" alt="Info" @click="replay()"/>
     </div>
     <div class="button-container">
         <img class="button" :src="infoImg" alt="Info" @click="showInfo=true"/>
@@ -194,23 +193,9 @@ document.addEventListener('click', (e) => {
         <img class="button" :src="emptyImg" alt="Share" @click="showModal=true"/>
         <!-- <img class="button" :src="shareImg" alt="Share" @click="showModal=true"/> -->
     </div>
-    <InstrumentTable @set-instrument="setInstrument" :instrArray="instrArray" :selectable="selectable"/>
-    <div id="make-music-line">
-        <MusicLine v-for="i in 4" :space="(i%2)?true:false" :instrument="selectedInstr[i-1]" :play="playing" :player="selectedInstr[i-1] == -1 ? undefined : players[selectedInstr[i-1]]"/>
-    </div>
     <div id="animation">
         <PlayInstrumentAni v-for="(ani, aniIndex) in selectedInstr" :instrument="ani" :play="playing"/>
     </div>
-    <ShareModal :show-modal="showModal" v-on:close-modal="showModal=false"></ShareModal>
-    <FadeBackground :show="showInfo">
-        <div>
-            <div class="modal-overlay"></div>
-            <img class="pos-left-center cover-left-up" :src="infoAllImgLu">
-            <img class="pos-right-center cover-left-bottom" :src="infoAllImgLb">
-            <img class="pos-left-center cover-right-up" :src="infoAllImgRu">
-            <img class="pos-right-center cover-right-bottom" :src="infoAllImgRb" @click="showInfo=false">
-        </div>
-    </FadeBackground>
 </template>
 
 <style scoped>
@@ -366,9 +351,9 @@ document.addEventListener('click', (e) => {
 }
 #animation {
     position: absolute;
-    width: 60%;
-    height: 35%;
-    top: 20%;
-    left: 20%;
+    width: 90%;
+    /* height: 60%;
+    top: 20%; */
+    left: 5%;
 }
 </style>

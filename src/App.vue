@@ -8,11 +8,34 @@ import {preloadAll, preloadPlay, preloadHome} from './js/preload'
 import {onMounted} from 'vue'
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
+import Share from './components/Share.vue'
+import { useRoute, useRouter } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
+
+onMounted(() => {
+  getUrlQueryParams()
+
+});
+
+let getUrlQueryParams = async () => {    
+  await router.isReady()
+  Object.keys(route.query).forEach(function(k){
+    console.log(k);
+    if (k == 'share') {
+      state.share = true;
+      state.main = false;
+    }
+  });
+};
+
 
 let state = reactive({
   main: false,
   playground: false,
   loading: true,
+  share: false,
 })
 let start = () => {
   state.main = false;
@@ -57,6 +80,9 @@ onMounted(()=>{
   </FadeBackground>
   <FadeBackground :show="state.playground">
     <Playground @home="home"/>
+  </FadeBackground>
+  <FadeBackground :show="state.share">
+    <Share />
   </FadeBackground>
   <!-- <InstrumentTable /> -->
 </template>
