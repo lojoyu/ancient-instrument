@@ -17,6 +17,7 @@ import triangleImg from '../assets/1.Home開頭主頁/1-三角形.png'
 import textImg from '../assets/1.Home開頭主頁/1-文字-創造你的南島之音.png'
 import startImg from '../assets/1.Home開頭主頁/1-文字-點擊開始.png'
 import bgImg from '../assets/1.Home開頭主頁/1-背景.png'
+import rotateImg from '../assets/手機轉橫式.png'
 
 //instrument
 import {instruments, instrumentsEn} from '../assets/instrument.js'
@@ -43,7 +44,7 @@ export let preloadAll = (loaded) => {
     
     let count = 0;
     let imgs = [
-        triangleImg, textImg, startImg, bgImg,
+        triangleImg, textImg, startImg, bgImg, rotateImg,
         infoImg, playImg, pauseImg, shareImg, leafImg, infoAllImgLu, infoAllImgLb, 
         infoAllImgRb, infoAllImgRu, homeImg, replayImg, emptyImg,
         ...instrumentImg,
@@ -62,7 +63,7 @@ export let preloadHome = (loaded = ()=>{}) => {
     
     let count = 0;
     let imgs = [
-        triangleImg, textImg, startImg, bgImg,
+        triangleImg, textImg, startImg, bgImg, rotateImg
     ];
     for (let i=0; i<imgs.length; i++) {
         let image = new Image();
@@ -79,7 +80,7 @@ export let preloadPlay = (loaded = ()=>{}) => {
     let count = 0;
     let imgs = [
         infoImg, playImg, pauseImg, shareImg, leafImg, infoAllImgLu, infoAllImgLb, 
-        infoAllImgRb, infoAllImgRu, homeImg, replayImg, emptyImg,
+        infoAllImgRb, infoAllImgRu, homeImg, replayImg, emptyImg, rotateImg,
         ...instrumentImg,
     ];
     for (let i=0; i<imgs.length; i++) {

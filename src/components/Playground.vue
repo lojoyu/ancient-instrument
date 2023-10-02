@@ -27,26 +27,8 @@ import {defineProps} from 'vue';
 import * as Tone from 'tone'
 import { instrumentsEn } from '../assets/instrument'
 import sound from '../assets/Music/BoatLute_1.mp3'
-import { useRoute, useRouter } from 'vue-router'
 import ShareModal from './ShareModal.vue'
 import FadeBackground from './FadeBackground.vue'
-
-const router = useRouter()
-const route = useRoute()
-
-onMounted(() => {
-  getUrlQueryParams()
-
-});
-
-let getUrlQueryParams = async () => {    
-  await router.isReady()
-  Object.keys(route.query).forEach(function(k){
-    selectedInstr[k] = parseInt(route.query[k]);
-    instrArray[route.query[k]] = true;
-    totalInstr++;
-  });
-};
 
 const props = defineProps({
   show: Boolean
@@ -57,13 +39,14 @@ let showModal = ref(false);
 let showInfo = ref(true);
 let timeout;
 
+let url = ref('');
 const playbtn = ref(null)
 const el  = ref(null)
-const leftLeaf = ref(null)
-const triangle = ref(null)
+
 let instrArray = reactive([false, false, false, false, false, false, false, false])
 let playing = ref(false)
 let selectedInstr = reactive([-1, -1, -1, -1])
+let tempo = reactive([0, 0, 0, 0]);
 let selectable = ref(true)
 const { width, height } = useElementSize(el)
 let myp5 = null;
@@ -169,8 +152,18 @@ let replay = (home=false) => {
     }
 }
 
+let setTempoData = (id, t) => {
+    tempo[id] = t;
+}
+
 let share = () => {
-    console.log(window.location.host);
+    url.value = window.location.href + '?';
+    for (let i=0 ;i<selectedInstr.length; i++) {
+        if (selectedInstr[i] == -1) continue;
+        url.value += `${i}=${selectedInstr[i]}${tempo[i]}&`
+    }
+    url.value += 'share=true'
+    console.log(url.value);
     showModal.value=true
 }
 
@@ -197,17 +190,17 @@ document.addEventListener('click', (e) => {
     <div class="button-container">
         <img class="button" :src="infoImg" alt="Info" @click="showInfo=true"/>
         <img class="button" :src="playImg" alt="Play" @click="clickPlay($event)" play='false' ref="playbtn"/>
-        <img class="button" :src="emptyImg" alt="Share" @click="showModal=true"/>
-        <!-- <img class="button" :src="shareImg" alt="Share" @click="share()"/> -->
+        <!-- <img class="button" :src="emptyImg" alt="Share" @click="share"/> -->
+        <img class="button" :src="shareImg" alt="Share" @click="share()"/>
     </div>
     <InstrumentTable @set-instrument="setInstrument" :instrArray="instrArray" :selectable="selectable"/>
     <div id="make-music-line">
-        <MusicLine v-for="i in 4" :space="(i%2)?true:false" :instrument="selectedInstr[i-1]" :play="playing" :player="selectedInstr[i-1] == -1 ? undefined : players[selectedInstr[i-1]]"/>
+        <MusicLine v-for="i in 4" :space="(i%2)?true:false" :instrument="selectedInstr[i-1]" :play="playing" :player="selectedInstr[i-1] == -1 ? undefined : players[selectedInstr[i-1]]" :id="i-1" :tempo="tempo[i-1]" @tempoChange="setTempoData" />
     </div>
     <div id="animation">
-        <PlayInstrumentAni v-for="(ani, aniIndex) in selectedInstr" :instrument="ani" :play="playing"/>
+        <PlayInstrumentAni v-for="(ani, aniIndex) in selectedInstr" :instrument="ani" :play="playing" :empty="true"/>
     </div>
-    <ShareModal :show-modal="showModal" v-on:close-modal="showModal=false"></ShareModal>
+    <ShareModal :show-modal="showModal" v-on:close-modal="showModal=false" :url="url"></ShareModal>
     <FadeBackground :show="showInfo">
         <div>
             <div class="modal-overlay"></div>

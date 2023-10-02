@@ -29,7 +29,8 @@ const animationData = [
 let animation;
 const props = defineProps({
     instrument: Number,
-    play: Boolean
+    play: Boolean,
+    empty: Boolean,
 })
 
 watch(()=>props.play, (p) => {
@@ -63,13 +64,17 @@ watch(()=>props.instrument, (i, oldi) => {
 
 </script>
 <template>
-    <div class="animation" ref="aniDiv"></div>
-    <div v-if="props.instrument==-1" class="empty" ></div>
+    <!-- <div v-if="props.instrument!=-1" :class="props.empty?'animation':'animationcenter'" ref="aniDiv"></div> -->
+    <div :class="props.empty?'animation':props.instrument==-1?'':'animationcenter'" ref="aniDiv"></div>
+    <div v-if="props.instrument==-1&&props.empty" class="empty" ></div>
 </template>
 <style scoped>
 .animation {
     float: left;
     width: 25%;
+}
+.animationcenter {
+    width: 22%;
 }
 .empty {
     float: left;

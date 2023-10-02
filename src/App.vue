@@ -15,20 +15,17 @@ import rotateImg from './assets/手機轉橫式.png'
 const router = useRouter()
 const route = useRoute()
 
-onMounted(() => {
-  getUrlQueryParams()
-
-});
-
 let getUrlQueryParams = async () => {    
   await router.isReady()
   Object.keys(route.query).forEach(function(k){
-    console.log(k);
-    if (k == 'share') {
+    if (k == 'share' && route.query[k]=='true') {
+      state.loading = false;
       state.share = true;
-      state.main = false;
+      return true;
     }
   });
+  state.loading = false;
+  state.main = !state.share;
 };
 
 let toRotate = ref(false);
@@ -38,6 +35,7 @@ let state = reactive({
   loading: true,
   share: false,
 })
+
 let start = () => {
   state.main = false;
   state.loading = true;
@@ -47,10 +45,6 @@ let start = () => {
   });
 }
 
-function preloadImage(im_url) {
-  let img = new Image();
-  img.src = im_url;
-}
 let home = () => {
   state.playground = false;
   state.loading = true;
@@ -59,25 +53,38 @@ let home = () => {
     state.main = true;
   });
 }
-onMounted(()=>{
-  preloadAll(()=>{
-    console.log('all loaded!');
+
+let shareToHome = () => {
+  router.replace({ query: {} })
+  state.share = false;
+  state.loading = true;
+  preloadHome(()=>{
     state.loading = false;
     state.main = true;
+  });
+}
+
+onMounted(()=>{
+  preloadAll(()=>{
+    getUrlQueryParams()
+    
   })
 })
 
-let handleOrientationChange = () => {
-  const orientation = window.screen.orientation.type
-  if (orientation === "portrait-primary") {
-    // portrait mode
-    toRotate.value = true;
-  } else if (orientation === "landscape-primary") {
-    // landscape mode
-    toRotate.value = false;
-  }
-}
-window.addEventListener("orientationchange", handleOrientationChange);
+const portrait = window.matchMedia("(orientation: portrait)").matches;
+window.matchMedia("(orientation: portrait)").addEventListener("change", e => {
+    const portrait = e.matches;
+
+    if (portrait) {
+        // do something
+        toRotate.value = true;
+
+    } else {
+        // do something else
+        toRotate.value = false;
+
+    }
+});
 
 </script>
 
@@ -96,7 +103,7 @@ window.addEventListener("orientationchange", handleOrientationChange);
     <Playground @home="home"/>
   </FadeBackground>
   <FadeBackground :show="state.share">
-    <Share />
+    <Share @home="shareToHome"/>
   </FadeBackground>
   <FadeBackground :show="toRotate">
     <div class="overlay" 

@@ -37,16 +37,30 @@ onMounted(() => {
   getUrlQueryParams()
 
 });
+let players = reactive([])
 
+for (let i=0; i<instrumentsEn.length; i++) {
+    players.push([undefined, undefined, undefined]);
+}
 
 let getUrlQueryParams = async () => {    
   await router.isReady()
   Object.keys(route.query).forEach(function(k){
-    console.log('share', k)
     if (k != 'share') {
-        selectedInstr[k] = parseInt(route.query[k]);
+        let n = parseInt(route.query[k]);
+        let t = n%10;
+        tempo[k] = t;
+        selectedInstr[k] = (n - t)/10;
         instrArray[route.query[k]] = true;
         totalInstr++;
+        players[selectedInstr[k]][tempo[k]] = new Tone.Player({
+            url: getMusicUrl(`${instrumentsEn[selectedInstr[k]]}_${tempo[k]+1}.mp3`),
+            onload: ()=>{
+                musicLoaded++;
+            },
+            loop: true
+        }).toDestination();
+        
     }
   });
 };
@@ -67,6 +81,7 @@ const triangle = ref(null)
 let instrArray = reactive([false, false, false, false, false, false, false, false])
 let playing = ref(false)
 let selectedInstr = reactive([-1, -1, -1, -1])
+let tempo = reactive([0, 0, 0, 0])
 let selectable = ref(true)
 const { width, height } = useElementSize(el)
 let myp5 = null;
@@ -75,21 +90,9 @@ let totalInstr = 0;
 const getMusicUrl = (name) => {
     return new URL(`../assets/Music/${name}`, import.meta.url).href
 }
-let players = reactive([])
 let musicLoaded = 0;
 //let players = [];
-for (let i=0; i<instrumentsEn.length; i++) {
-    players.push([]);
-    for (let j=0; j<3; j++) {
-        players[i].push(new Tone.Player({
-            url: getMusicUrl(`${instrumentsEn[i]}_${j+1}.mp3`),
-            onload: ()=>{
-                musicLoaded++;
-            },
-            loop: true
-        }).toDestination());
-    }
-}
+
 let player = new Tone.Player(sound).toDestination();
 const animationInstr = ref(-1);
 
@@ -101,14 +104,14 @@ watch(height, (h) => {
 });
 
 onMounted(() => {
-    myp5 = new p5(script, document.getElementById('p5-bg'));
+    //myp5 = new p5(script, document.getElementById('p5-bg'));
     setTimeout(()=> {
         showInfo.value = false
     }, 7000);
 })
 
 let clickPlay = (event) => {
-    if (musicLoaded < 24) return;
+    if (musicLoaded < totalInstr) return;
     let el = event.target;
     if (el.getAttribute('play') == 'true') {
         //pause
@@ -156,19 +159,10 @@ let replay = (home=false) => {
     playbtn.value.setAttribute('play', false);
     playbtn.value.src = playImg;
 
-    for (let i=0; i<selectedInstr.length; i++) {
-        selectedInstr[i] = -1;
-        totalInstr = 0;
-        selectable = true;
-    }
-    for (let i=0; i<instrArray.length; i++) {
-        instrArray[i] = false;
-    }
     if (home) {
         setTimeout(()=>{
             emit('home');
-        }, 100)
-        
+        }, 0)
     }
 }
 
@@ -184,21 +178,24 @@ document.addEventListener('click', (e) => {
 <template>
     <img class="bg pos-top-center" :src="bgImg" alt="background" id="background">
     <img class="bg pos-top-ceter" :src="leafImg">
-    <div class="btn-left-up">
-        <img class="button-up" :src="homeImg" alt="Info" @click="replay(true)"/>
+    <div id="animation" class="center">
+        <PlayInstrumentAni v-for="(ani, aniIndex) in selectedInstr" :instrument="ani" :play="playing" :empty="false"/>
     </div>
-    <div class="button-container">
-        <img class="button" :src="infoImg" alt="Info" @click="showInfo=true"/>
-        <img class="button" :src="playImg" alt="Play" @click="clickPlay($event)" play='false' ref="playbtn"/>
-        <img class="button" :src="emptyImg" alt="Share" @click="showModal=true"/>
-        <!-- <img class="button" :src="shareImg" alt="Share" @click="showModal=true"/> -->
+    <div class="button-container center">
+        <img class="button" :src="playImg" @click="clickPlay($event)" play='false' ref="playbtn"/>
+        <img class="button" :src="homeImg" alt="Info" @click="replay(true)"/>
     </div>
-    <div id="animation">
-        <PlayInstrumentAni v-for="(ani, aniIndex) in selectedInstr" :instrument="ani" :play="playing"/>
+    <div id="make-music-line">
+        <MusicLine v-for="i in 4" :space="(i%2)?true:false" :instrument="selectedInstr[i-1]" :play="playing" :player="selectedInstr[i-1] == -1 ? undefined : players[selectedInstr[i-1]]" :tempo="tempo[i-1]"/>
     </div>
 </template>
 
 <style scoped>
+
+#make-music-line {
+    position:absolute;
+    z-index: -1000;
+}
 .btn-left-up {
     position: absolute;
     top: 0;
@@ -301,41 +298,12 @@ document.addEventListener('click', (e) => {
 }
 .button-container {
     position: absolute;
-    right: 2%;
-    bottom: 5%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     width: 5%;
+    bottom: 10%;
+    left: 50%;
+    -ms-transform: translate(-50%, 0%);
+    transform: translate(-50%, 0%);
 }
-
-.circle-button {
-    margin: 0;
-    border: none;
-    background-color: rgba(0, 0, 0, 0);
-  /* border-radius: 50%;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  margin: 10px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column; */
-}
-
-/* .circle-button img {
-  width: 10%;
-  height: 10%;
-} */
-
-.button-up {
-    width: 60%;
-    height: auto;
-    margin: 20%;
-}
-
 .button {
     width: 76%;
     height: auto;
@@ -348,12 +316,27 @@ document.addEventListener('click', (e) => {
     height: 30%;
     top: 65%;
     left: 50%;
+
 }
+
 #animation {
-    position: absolute;
+    /* display: inline-block; */
+    /* position: absolute; */
     width: 90%;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    -ms-transform: translate(-50%, -40%);
+    transform: translate(-50%, -40%);
+    /* height: 60%; */
     /* height: 60%;
     top: 20%; */
-    left: 5%;
+    /* left: 5%; */
+}
+.center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 </style>

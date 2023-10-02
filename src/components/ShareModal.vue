@@ -35,7 +35,7 @@ watch(height, (h) => {
           >
           <img class="logo" :src="logo" alt="logo" /><br>
           <figure class="qrcode" ref="el">
-            <vue-qrcode value="props.url"
+            <vue-qrcode :value="url"
                         :options="opt">
             </vue-qrcode><br>
         </figure>

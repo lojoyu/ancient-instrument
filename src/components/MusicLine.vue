@@ -12,12 +12,14 @@ import * as Tone from 'tone'
 
 
 const props = defineProps({
+  id: Number,
   instrument: Number,
   tempo: Number,
   space: Boolean,
   play: Boolean,
   player: Array
 })
+const emit = defineEmits(['tempoChange'])
 
 const el  = ref(null)
 const imgPlace  = ref(null)
@@ -59,13 +61,13 @@ watch(()=>props.play, (p) => {
     if (myp5 != null) myp5.playing = p;
     if (p) startTime = Date.now();
     if (props.player == undefined) return;
-    if (p) toRaw(props.player)[nowTempo].start();
-    else toRaw(props.player)[nowTempo].stop();
+    if (p) toRaw(props.player)[props.tempo].start();
+    else toRaw(props.player)[props.tempo].stop();
 });
 watch(()=>props.player, (player, oldPlayer) => {
-    if (player == undefined && props.play) toRaw(oldPlayer)[nowTempo].stop();
-    if (props.play) toRaw(player)[nowTempo].start(0, (Date.now() - startTime)/1000);
-    if (oldPlayer != undefined && !props.play) toRaw(oldPlayer)[nowTempo].stop();
+    if (player == undefined && props.play) toRaw(oldPlayer)[props.tempo].stop();
+    if (props.play) toRaw(player)[props.tempo].start(0, (Date.now() - startTime)/1000);
+    if (oldPlayer != undefined && !props.play) toRaw(oldPlayer)[props.tempo].stop();
    // else toRaw(player)[nowTempo].stop();
 
     // if (p) startTime = Date.now();
@@ -86,11 +88,11 @@ onMounted(() => {
 let changeTempo = () => {
   if (props.instrument < 0) return;
   if (props.play) {
-    toRaw(props.player)[nowTempo].stop();
-    toRaw(props.player)[(nowTempo + 1) % 3].start(+0, (Date.now() - startTime)/1000);
+    toRaw(props.player)[props.tempo].stop();
+    toRaw(props.player)[(props.tempo + 1) % 3].start(+0, (Date.now() - startTime)/1000);
   }
-  nowTempo = (nowTempo + 1) % 3;
-  tempoPlace.value.src = instrumentImg[props.instrument].dotSrc[nowTempo];
+  tempoPlace.value.src = instrumentImg[props.instrument].dotSrc[props.tempo];
+  emit('tempoChange', props.id, (props.tempo + 1)%3);
 }
 
 </script>
@@ -104,7 +106,7 @@ let changeTempo = () => {
     <!-- <div class="up-image"> -->
     <!-- <img :class="space?instr-space:instr" :src="instrument < 0 ? notSelectedImg : instrumentImg[instrument].imageSrc" @click="changeTempo()" ref="imgPlace"> -->
     <img class="instr" :src="instrument < 0 ? notSelectedImg : instrumentImg[instrument].imageSrc" @click="changeTempo()" ref="imgPlace">
-    <img class="dot" :src="instrument < 0 ? dotImg :  instrumentImg[instrument].dotSrc[nowTempo]" ref="tempoPlace">
+    <img class="dot" :src="instrument < 0 ? dotImg :  instrumentImg[instrument].dotSrc[props.tempo]" ref="tempoPlace">
       
     <!-- </div> -->
   </div>
