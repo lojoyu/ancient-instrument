@@ -31,7 +31,8 @@ import ShareModal from './ShareModal.vue'
 import FadeBackground from './FadeBackground.vue'
 
 const props = defineProps({
-  show: Boolean
+  show: Boolean,
+  exhibition: Boolean,
 })
 const emit = defineEmits(['start', 'click', 'home'])
 
@@ -81,7 +82,8 @@ watch(height, (h) => {
 });
 
 onMounted(() => {
-    myp5 = new p5(script, document.getElementById('p5-bg'));
+    clickCheck();
+    //myp5 = new p5(script, document.getElementById('p5-bg'));
     setTimeout(()=> {
         showInfo.value = false
     }, 7000);
@@ -157,7 +159,9 @@ let setTempoData = (id, t) => {
 }
 
 let share = () => {
-    url.value = window.location.href + '?';
+    //location.protocol + '//' + location.host + location.pathname
+    url.value = window.location.protocol + '//' + window.location.host + window.location.pathname + '?';
+    //url.value = window.location.href + '?';
     for (let i=0 ;i<selectedInstr.length; i++) {
         if (selectedInstr[i] == -1) continue;
         url.value += `${i}=${selectedInstr[i]}${tempo[i]}&`
@@ -168,12 +172,19 @@ let share = () => {
 }
 
 document.addEventListener('click', (e) => {
+  clickCheck();  
+})
+
+let clickCheck = () => {
     Tone.start();
+    console.log('exhibition', props.exhibition)
+    if (!props.exhibition) return;
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => {
         replay(true);
     }, 50000);
-})
+}
+
 </script>
 
 <template>
@@ -200,7 +211,7 @@ document.addEventListener('click', (e) => {
     <div id="animation">
         <PlayInstrumentAni v-for="(ani, aniIndex) in selectedInstr" :instrument="ani" :play="playing" :empty="true"/>
     </div>
-    <ShareModal :show-modal="showModal" v-on:close-modal="showModal=false" :url="url"></ShareModal>
+    <ShareModal :show-modal="showModal" v-on:close-modal="showModal=false" :url="url" :show-copy="!props.exhibition"></ShareModal>
     <FadeBackground :show="showInfo">
         <div>
             <div class="modal-overlay"></div>

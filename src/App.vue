@@ -14,6 +14,7 @@ import rotateImg from './assets/手機轉橫式.png'
 
 const router = useRouter()
 const route = useRoute()
+let exhibition = ref(false);
 
 let getUrlQueryParams = async () => {    
   await router.isReady()
@@ -22,6 +23,10 @@ let getUrlQueryParams = async () => {
       state.loading = false;
       state.share = true;
       return true;
+    }
+    if (k == 'exhibition') {
+      exhibition.value = true;
+      return;
     }
   });
   state.loading = false;
@@ -64,25 +69,22 @@ let shareToHome = () => {
   });
 }
 
+const portrait = window.matchMedia("(orientation: portrait)").matches;
 onMounted(()=>{
   preloadAll(()=>{
     getUrlQueryParams()
-    
   })
+  if (portrait) {
+    toRotate.value = true;
+  }
 })
 
-const portrait = window.matchMedia("(orientation: portrait)").matches;
 window.matchMedia("(orientation: portrait)").addEventListener("change", e => {
     const portrait = e.matches;
-
     if (portrait) {
-        // do something
         toRotate.value = true;
-
     } else {
-        // do something else
         toRotate.value = false;
-
     }
 });
 
@@ -100,7 +102,7 @@ window.matchMedia("(orientation: portrait)").addEventListener("change", e => {
     <P5Background @start="start"/>
   </FadeBackground>
   <FadeBackground :show="state.playground">
-    <Playground @home="home"/>
+    <Playground @home="home" :exhibition="exhibition"/>
   </FadeBackground>
   <FadeBackground :show="state.share">
     <Share @home="shareToHome"/>
@@ -133,7 +135,7 @@ window.matchMedia("(orientation: portrait)").addEventListener("change", e => {
 
 .rotate {
   width: 80%;
-  height: fit-content;
+  height: auto;
   z-index: 1001;
   display: block;
   margin-left: auto;

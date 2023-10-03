@@ -1,24 +1,32 @@
 <script setup>
 import { defineProps, Transition, ref, reactive, watch, onMounted } from 'vue';
 import logo from '../assets/6-分享/6-十三行logo.png';
-import text from '../assets/6-分享/6-分享你的南島音樂.png';
+import textImg from '../assets/6-分享/6-分享你的南島音樂.png';
 import VueQrcode from '@chenfengyuan/vue-qrcode';
-import { useElementSize } from '@vueuse/core'
+import { useElementSize, useClipboard } from '@vueuse/core'
+
 
 
 const emit = defineEmits(['closeModal'])
 const props = defineProps({
   showModal: Boolean,
-  url: String
+  url: String,
+  showCopy: Boolean
 })
 
 const el  = ref(null)
 const opt = reactive({color: {light: '#f0c946'}})
 const { width, height } = useElementSize(el)
+const source = ref('');
+const { text, copy, copied, isSupported } = useClipboard({ source })
 
 watch(height, (h) => {
   opt.width = h;
 });
+
+watch(()=>props.url, (url)=>{
+  source.value = url;
+})
 
 </script>
 <template>
@@ -38,9 +46,15 @@ watch(height, (h) => {
             <vue-qrcode :value="url"
                         :options="opt">
             </vue-qrcode><br>
-        </figure>
+          </figure>
+          <div v-if="isSupported&&props.showCopy" class="copy-box">
+            <button @click='copy(source)' class="copy-link-box">
+              <span v-if='!copied'>點選複製分享網址</span>
+              <span v-else>複製好了！</span>
+            </button>
+          </div>
 
-          <img class="sharetext" :src="text" alt="logo" />
+          <img class="sharetext" :src="textImg" alt="logo" />
 
         <!-- <button @click="emit('closeModal')" class="button">Hide Modal</button> -->
 
@@ -50,14 +64,30 @@ watch(height, (h) => {
 
 </template>
 <style scoped>
+.copy-link-box {
+    display: inline-block;
+    padding: 10px;
+    background-color: rgb(224, 224, 224);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    user-select: none;
+    width: 25%;
+}
+
 .logo {
   margin-top: 1%;
-    width: 20%;
+    height: 10%;
+}
+
+.copy-box {
+  margin-bottom: 1%;
+  /* height: 6%; */
 }
 .qrcode {
   width: 80%;
   margin: 0 10%;
-  height: 70%;
+  height: 60%;
   /* height: 70%; */
 }
 .sharetext {

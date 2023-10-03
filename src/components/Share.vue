@@ -1,7 +1,8 @@
 <script setup>
 import { ref, reactive, onMounted, watch, toRaw } from 'vue'
 import { useElementSize } from '@vueuse/core'
-import bgImg from '../assets/2.Back Ground底圖/2-底圖all.png'
+
+import bgImg from '../assets/分享頁面背景.png'
 import selectInstrumentImg from '../assets/3.選擇樂器區域/3-選擇樂器底-全部.png'
 import makeMusicImg from '../assets/4.製作音樂組合/4-製作音樂底.png'
 import InstrumentTable from './InstrumentTable.vue'
@@ -29,6 +30,7 @@ import sound from '../assets/Music/BoatLute_1.mp3'
 import { useRoute, useRouter } from 'vue-router'
 import ShareModal from './ShareModal.vue'
 import FadeBackground from './FadeBackground.vue'
+
 
 const router = useRouter()
 const route = useRoute()
@@ -92,6 +94,8 @@ const getMusicUrl = (name) => {
 }
 let musicLoaded = 0;
 //let players = [];
+
+
 
 let player = new Tone.Player(sound).toDestination();
 const animationInstr = ref(-1);
@@ -176,7 +180,7 @@ document.addEventListener('click', (e) => {
 </script>
 
 <template>
-    <img class="bg pos-top-center" :src="bgImg" alt="background" id="background">
+    <img class="bg pos-top-center" :src="bgImg" id="background">
     <img class="bg pos-top-ceter" :src="leafImg">
     <div id="animation" class="center">
         <PlayInstrumentAni v-for="(ani, aniIndex) in selectedInstr" :instrument="ani" :play="playing" :empty="false"/>
