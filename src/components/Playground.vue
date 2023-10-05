@@ -371,7 +371,7 @@ let clickCheck = () => {
     position: absolute;
     width: 43%;
     height: 30%;
-    top: 65%;
+    top: 67%;
     left: 50%;
 }
 #animation {
@@ -380,5 +380,24 @@ let clickCheck = () => {
     height: 35%;
     top: 20%;
     left: 20%;
+}
+
+@media (min-aspect-ratio: 10/5) {
+    #animation {
+        width: 50%;
+        left: 25%;
+        top: 16%;
+    }
+    #make-music-line {
+        height: 35%;
+        top: 60%;
+    }
+}
+
+@media (min-aspect-ratio: 12/5) {
+    #animation {
+        width: 40%;
+        left: 30%;
+    }
 }
 </style>

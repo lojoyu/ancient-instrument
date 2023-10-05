@@ -77,7 +77,7 @@ let imgLoad = () => {
 .coverimg {
     position: relative;
     width: 100%;
-    height: 30vh;
+    height: 35vh;
 }
 #triangle, #text {
     position: absolute;
@@ -102,8 +102,8 @@ let imgLoad = () => {
     z-index: 1;
     width: 40%;
     margin: 0 auto;
-    -ms-transform: translateY(50%);
-    transform: translateY(50%);
+    -ms-transform: translateY(30%);
+    transform: translateY(30%);
     /* padding: 12%; */
 }
 .centerobj img {

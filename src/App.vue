@@ -24,7 +24,7 @@ let getUrlQueryParams = async () => {
       state.share = true;
       return true;
     }
-    if (k == 'exhibition') {
+    if (k == 'exhibition' && route.query[k]=='true') {
       exhibition.value = true;
       return;
     }
@@ -71,6 +71,7 @@ let shareToHome = () => {
 
 const portrait = window.matchMedia("(orientation: portrait)").matches;
 onMounted(()=>{
+  //functiondisable();
   preloadAll(()=>{
     getUrlQueryParams()
   })
@@ -87,6 +88,17 @@ window.matchMedia("(orientation: portrait)").addEventListener("change", e => {
         toRotate.value = false;
     }
 });
+
+let functiondisable = () => {
+  // To get the scroll position of current webpage
+  let TopScroll = window.scrollY || document.documentElement.scrollTop;
+  let LeftScroll = window.scrollX || document.documentElement.scrollLeft;
+
+  // if scroll happens, set it to the previous value
+  window.onscroll = function() {
+    window.scrollTo(LeftScroll, TopScroll);
+  };
+}
 
 </script>
 

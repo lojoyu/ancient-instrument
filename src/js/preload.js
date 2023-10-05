@@ -12,7 +12,8 @@ import homeImg from '../assets/5.icon/5-回開始畫面.png'
 import replayImg from '../assets/5.icon/5-再一次.png'
 import emptyImg from '../assets/5.icon/5-空.png'
 import shareBgImg from '../assets/分享頁面背景.png'
-
+import copyImg from '../assets/6-分享/文字-點選複製分享網址.png';
+import copiedImg from '../assets/6-分享/文字-已複製.png';
 
 //home
 import triangleImg from '../assets/1.Home開頭主頁/1-三角形.png'
@@ -46,7 +47,7 @@ export let preloadAll = (loaded) => {
     
     let count = 0;
     let imgs = [
-        triangleImg, textImg, startImg, bgImg, rotateImg, shareBgImg,
+        triangleImg, textImg, startImg, bgImg, rotateImg, shareBgImg, copyImg, copiedImg,
         infoImg, playImg, pauseImg, shareImg, leafImg, infoAllImgLu, infoAllImgLb, 
         infoAllImgRb, infoAllImgRu, homeImg, replayImg, emptyImg,
         ...instrumentImg,
@@ -65,7 +66,7 @@ export let preloadHome = (loaded = ()=>{}) => {
     
     let count = 0;
     let imgs = [
-        triangleImg, textImg, startImg, bgImg, rotateImg
+        triangleImg, textImg, startImg, bgImg, rotateImg 
     ];
     for (let i=0; i<imgs.length; i++) {
         let image = new Image();
@@ -81,7 +82,7 @@ export let preloadPlay = (loaded = ()=>{}) => {
     
     let count = 0;
     let imgs = [
-        infoImg, playImg, pauseImg, shareImg, leafImg, infoAllImgLu, infoAllImgLb, 
+        infoImg, playImg, pauseImg, shareImg, leafImg, infoAllImgLu, infoAllImgLb, copyImg, copiedImg,
         infoAllImgRb, infoAllImgRu, homeImg, replayImg, emptyImg, rotateImg, shareBgImg,
         ...instrumentImg,
     ];

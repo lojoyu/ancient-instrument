@@ -4,6 +4,8 @@ import logo from '../assets/6-分享/6-十三行logo.png';
 import textImg from '../assets/6-分享/6-分享你的南島音樂.png';
 import VueQrcode from '@chenfengyuan/vue-qrcode';
 import { useElementSize, useClipboard } from '@vueuse/core'
+import copyImg from '../assets/6-分享/文字-點選複製分享網址.png';
+import copiedImg from '../assets/6-分享/文字-已複製.png';
 
 
 
@@ -18,6 +20,7 @@ const el  = ref(null)
 const opt = reactive({color: {light: '#f0c946'}})
 const { width, height } = useElementSize(el)
 const source = ref('');
+const othercopied = ref(false);
 const { text, copy, copied, isSupported } = useClipboard({ source })
 
 watch(height, (h) => {
@@ -27,6 +30,7 @@ watch(height, (h) => {
 watch(()=>props.url, (url)=>{
   source.value = url;
 })
+
 
 </script>
 <template>
@@ -41,20 +45,25 @@ watch(()=>props.url, (url)=>{
           role="dialog" 
           v-if="props.showModal"
           >
-          <img class="logo" :src="logo" alt="logo" /><br>
+          <img class="sharetext" :src="textImg" alt="logo" />
+          <div v-if="isSupported&&props.showCopy" class="copy-box">
+            <button class="pushable" @click="copy(source)">
+                <span v-if='!copied' class="front">
+                    <img :src="copyImg">
+                </span>
+                <span v-else class="pushfront">
+                    <img :src="copiedImg">
+                </span>
+            </button>
+          </div>
           <figure class="qrcode" ref="el">
             <vue-qrcode :value="url"
                         :options="opt">
             </vue-qrcode><br>
           </figure>
-          <div v-if="isSupported&&props.showCopy" class="copy-box">
-            <button @click='copy(source)' class="copy-link-box">
-              <span v-if='!copied'>點選複製分享網址</span>
-              <span v-else>複製好了！</span>
-            </button>
-          </div>
+          
+          <img class="logo" :src="logo" alt="logo" /><br>
 
-          <img class="sharetext" :src="textImg" alt="logo" />
 
         <!-- <button @click="emit('closeModal')" class="button">Hide Modal</button> -->
 
@@ -64,24 +73,14 @@ watch(()=>props.url, (url)=>{
 
 </template>
 <style scoped>
-.copy-link-box {
-    display: inline-block;
-    padding: 10px;
-    background-color: rgb(224, 224, 224);
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-    user-select: none;
-    width: 25%;
-}
 
 .logo {
-  margin-top: 1%;
-    height: 10%;
+  margin: 0.5% 0 1.5% 0;
+  height: 10%;
 }
 
 .copy-box {
-  margin-bottom: 1%;
+  /* margin-bottom: 1%; */
   /* height: 6%; */
 }
 .qrcode {
@@ -91,20 +90,19 @@ watch(()=>props.url, (url)=>{
   /* height: 70%; */
 }
 .sharetext {
-  margin-top: 2%;
+  margin: 2% 0;
   height: 6%;
 }
-.button {
+/* .button {
   border: none;
   color: #FFF;
-  /* background: rgb(240, 201, 70); */
   appearance: none;
   font: inherit;
   font-size: 1.8rem;
   padding: .5em 1em;
   border-radius: .3em;
   cursor: pointer;
-}
+} */
 
 .modal {
   position: absolute;
@@ -171,4 +169,44 @@ watch(()=>props.url, (url)=>{
   opacity: 0;
   transform: scale(1) translateY(100%);
 }
+
+
+.pushable {
+    background: rgb(139,35,39);
+    border-radius: 10px;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline-offset: 4px;
+    width: 25%;
+
+}
+.front {
+    display: block;
+    padding: 2%;
+    border-radius: 10px;
+    font-size: 1.25rem;
+    background: rgb(165,53,52);
+    color: white;
+    transform: translateY(-10%);
+}
+
+.front img, .pushfront img{
+  width: 80%;
+}
+
+.pushable:active .front, .pushable:active .pushfront {
+    transform: translateY(-3%);
+}
+
+.pushfront {
+  display: block;
+  padding: 2%;
+  border-radius: 10px;
+  font-size: 1.25rem;
+  background: rgb(165,53,52);
+  color: white;
+  transform: translateY(-3%);
+}
+
 </style>
